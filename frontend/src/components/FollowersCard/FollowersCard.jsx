@@ -1,32 +1,43 @@
-import React from 'react'
-import './FollowersCard.css'
+import React, { useEffect, useState } from "react";
+import "./FollowersCard.css";
+import FollowersModal from "../FollowersModal/FollowersModal";
+import { getAllUser } from "../../api/UserRequest"
+import User from "../User/User";
+import { useSelector } from "react-redux";
 
-import {Followers} from '../../data/FollowersData'
 
-const FollowersCard = () => {
+const FollowersCard = ({ location }) => {
+  const [modalOpened, setModalOpened] = useState(false);
+  const [persons, setPersons] = useState([]);
+  const { user } = useSelector((state) => state.authReducer.authData);
+
+  useEffect(() => {
+    const fetchPersons = async () => {
+      const { data } = await getAllUser();
+      setPersons(data);
+    };
+    fetchPersons();
+  }, []);
+
   return (
     <div className="FollowersCard">
-        <h3>Who is folowing you</h3>
-        {
-            Followers.map((follower,id)=>{
-            return (
-                <div className="follower">
-                    <div>
-                    <img src={follower.img} alt="" className='followerImg'/>
-                    
-                    <div className="name">
-                        <span>{follower.name}</span>
-                        <span>@{follower.username}</span>
-                    </div>
-                    <button className="button fc-button">Follow</button>
-                    </div>
-                </div>
-                
-            )
-            }
-        )}
-    </div>
-  )
-}
+      <h3>People you may know</h3>
 
-export default FollowersCard
+      {persons.map((person, id) => {
+        if (person._id !== user._id) return <User person={person} key={id} />;
+      })}
+      {!location ? (
+        <span onClick={() => setModalOpened(true)}>Show more</span>
+      ) : (
+        ""
+      )}
+
+      <FollowersModal
+        modalOpened={modalOpened}
+        setModalOpened={setModalOpened}
+      />
+    </div>
+  );
+};
+
+export default FollowersCard;

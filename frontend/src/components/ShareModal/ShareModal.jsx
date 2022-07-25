@@ -1,3 +1,4 @@
+import React from 'react';
 import { Modal, useMantineTheme } from "@mantine/core";
 import PostShare from "../PostShare/PostShare";
 

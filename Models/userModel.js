@@ -40,6 +40,9 @@ const UserSchema = mongoose.Schema(
         relationship:{
             type:String
         },
+        country:{
+            type:String
+        },
         followers:[],
         following:[]
     },
